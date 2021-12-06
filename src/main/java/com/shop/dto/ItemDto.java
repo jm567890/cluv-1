@@ -17,7 +17,6 @@ public class ItemDto {
     private int stockNumber;
     private String itemDetail;
     private ItemSellStatus itemSellStatus;
-//    private String itemSellStatus;
     private LocalDateTime regTime;
     private LocalDateTime updateTime;
 }

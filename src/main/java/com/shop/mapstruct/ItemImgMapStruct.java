@@ -1,3 +1,4 @@
+//mapstruct 과제 주석
 //package com.shop.mapstruct;
 //
 //import com.shop.dto.ItemImgDto;

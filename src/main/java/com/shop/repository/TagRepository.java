@@ -13,6 +13,4 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "order by t.totalSell desc")
      List<Tag> findByOrderBy( );
 
-
-
 }

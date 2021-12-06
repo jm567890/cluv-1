@@ -115,14 +115,26 @@
                 <span class="input-group-text">상품 태그 설정</span>
             </div>
             <div class="form-control">
-                <input type="checkbox" name="tags[]" value="1"/>거실
-                <input type="checkbox" name="tags[]" value="2"/>침실
-                <input type="checkbox" name="tags[]" value="3"/>1인
-                <input type="checkbox" name="tags[]" value="4"/>4인
-                <input type="checkbox" name="tags[]" value="5"/>봄
-                <input type="checkbox" name="tags[]" value="6"/>여름
-                <input type="checkbox" name="tags[]" value="7"/>가을
-                <input type="checkbox" name="tags[]" value="8"/>겨울
+                <th:block th:if="${#lists.isEmpty(tags)}">
+                    <input type="checkbox" name="tags[]" value="1"/>거실
+                    <input type="checkbox" name="tags[]" value="2"/>침실
+                    <input type="checkbox" name="tags[]" value="3"/>1인
+                    <input type="checkbox" name="tags[]" value="4"/>4인
+                    <input type="checkbox" name="tags[]" value="5"/>봄
+                    <input type="checkbox" name="tags[]" value="6"/>여름
+                    <input type="checkbox" name="tags[]" value="7"/>가을
+                    <input type="checkbox" name="tags[]" value="8"/>겨울
+                </th:block>
+                <th:block th:unless="${#lists.isEmpty(tags)}">
+                    <input type="checkbox" name="tags[]" value="1" th:checked="${#lists.contains(tags, '1')}"/>거실
+                    <input type="checkbox" name="tags[]" value="2" th:checked="${#lists.contains(tags, '2')}"/>침실
+                    <input type="checkbox" name="tags[]" value="3" th:checked="${#lists.contains(tags, '3')}"/>1인
+                    <input type="checkbox" name="tags[]" value="4" th:checked="${#lists.contains(tags, '4')}"/>4인
+                    <input type="checkbox" name="tags[]" value="5" th:checked="${#lists.contains(tags, '5')}"/>봄
+                    <input type="checkbox" name="tags[]" value="6" th:checked="${#lists.contains(tags, '6')}"/>여름
+                    <input type="checkbox" name="tags[]" value="7" th:checked="${#lists.contains(tags, '7')}"/>가을
+                    <input type="checkbox" name="tags[]" value="8" th:checked="${#lists.contains(tags, '8')}"/>겨울
+                </th:block>
             </div>
         </div>
 

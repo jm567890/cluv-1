@@ -20,11 +20,11 @@ public class ItemImgDto {
     private String repImgYn;
 
         private static ModelMapper modelMapper = new ModelMapper();
-//    private static ItemImgMapStruct itemImgMapStruct= new ItemImgMapStructImpl();
+//    private static ItemImgMapStruct itemImgMapStruct= new ItemImgMapStructImpl(); //mapstruct 과제
 
     public static ItemImgDto of(ItemImg itemImg) {
         return modelMapper.map(itemImg,ItemImgDto.class);
-//        return itemImgMapStruct.toDto(itemImg);
+//        return itemImgMapStruct.toDto(itemImg); //mapstruct 과제
     }
 
 }

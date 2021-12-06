@@ -1,6 +1,9 @@
 package com.shop.service;
 
-import com.shop.dto.*;
+import com.shop.dto.ItemFormDto;
+import com.shop.dto.ItemImgDto;
+import com.shop.dto.ItemSearchDto;
+import com.shop.dto.MainItemDto;
 import com.shop.entity.Item;
 import com.shop.entity.ItemImg;
 import com.shop.entity.ItemTag;
@@ -9,7 +12,9 @@ import com.shop.repository.ItemImgRepository;
 import com.shop.repository.ItemRepository;
 import com.shop.repository.ItemTagRepository;
 import com.shop.repository.TagRepository;
+import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +28,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ItemService {
 
     private final ItemTagRepository itemTagRepository;
@@ -34,6 +40,7 @@ public class ItemService {
     private final ItemImgRepository itemImgRepository;
 
     private final TagRepository tagRepository;
+
 
     public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList, List<String> tags) throws Exception {
 
@@ -76,6 +83,7 @@ public class ItemService {
             itemImgDtoList.add(itemImgDto);
         }
 
+
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(EntityNotFoundException::new);
         ItemFormDto itemFormDto = ItemFormDto.of(item);
@@ -83,7 +91,21 @@ public class ItemService {
         return itemFormDto;
     }
 
-    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+    @Transactional(readOnly = true)
+    public List<Tag> getTags(Long itemId) {
+        List<ItemTag> itemTag = itemTagRepository.findByItem_Id(itemId);
+        List<Tag> tags = new ArrayList<>();
+        for (ItemTag itemtag : itemTag) {
+            Tag tag = itemtag.getTag();
+            Hibernate.initialize(tag);
+            Hibernate.unproxy(tag);
+
+            tags.add(tag);
+        }
+        return tags;
+    }
+
+    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList, List<String> tags) throws Exception {
         //상품 수정
         Item item = itemRepository.findById(itemFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
@@ -94,6 +116,22 @@ public class ItemService {
         for (int i = 0; i < itemImgFileList.size(); i++) {
             itemImgService.updateItemImg(itemImgIds.get(i),
                     itemImgFileList.get(i));
+        }
+        //태그 수정
+        List<ItemTag> savedItemTag = itemTagRepository.findByItem_Id(item.getId());
+
+        //기존 태그 삭제
+        for(ItemTag itemTag : savedItemTag) {
+            itemTagRepository.delete(itemTag);
+        }
+
+        //새 태그 등록
+        for(String tag : tags) {
+            ItemTag itemTag = new ItemTag();
+            Tag t = tagRepository.findById(Long.parseLong(tag)).orElseThrow(EntityNotFoundException::new);
+            itemTag.setItem(item);
+            itemTag.setTag(t);
+            itemTagRepository.save(itemTag);
         }
 
         return item.getId();

@@ -24,6 +24,4 @@ public class ItemTag {
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
-
-
 }

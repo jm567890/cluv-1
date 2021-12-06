@@ -6,31 +6,26 @@
     <title>Insert title here</title>
     <meta charset="UTF-8">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
         //차트 데이터 불러오기
-        var real_data = "[[${chartData}]]";
+        var real_data = [[${chartData}]];
         //차트 그리기
         google.charts.load('current', {'packages':['corechart', 'bar']});
         google.charts.setOnLoadCallback(drawVisualization);
 
         function drawVisualization() {
-            console.log(real_data);
-
+            var jsonData = JSON.parse(real_data);
 
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Year');
-            data.addColumn('number', 'Views');
+            data.addColumn('string', '태그');
+            data.addColumn('number', '누적판매량');
 
-            //{"1인"="0", "4인"="1", "가을"="0", "거실"="0", "겨울"="0", "봄"="0", "여름"="0", "침실"="1"};
-            var a = real_data.replaceAll("=", ":");
-            console.log(a);
-            var s = {"1인":123, "4인":15, "가을":100, "거실":230, "겨울":560, "봄":10, "여름":20, "침실":111};
-            Object.keys(real_data).forEach(function(key) {
-                //data.addRow([ "1인", "123" ]);
-            });
-            // JSON.parse(JSON.stringify(real_data))
+            for(var i in jsonData) {
+                data.addRow([ i, jsonData[i] ]);
+            }
+
             var options = {
-                title : '누적 판매량 상위 5, 태그의 개별 판매량 ',
+                title : '태그의 개별 누적 판매량 ',
                 vAxis: {title: '판매량'},
                 hAxis: {title: '태그'},
                 seriesType: 'bars',
@@ -39,25 +34,6 @@
             var chart = new google.visualization.ColumnChart(document
                 .getElementById('chart_div'));
             chart.draw(data, options);
-
-            // var data = google.visualization.arrayToDataTable(
-            // [   ['상위 태그', '누적판매량'],
-            //     ['1인',  165  ],
-            //     ['겨울',  135  ],
-            //     ['거실',  157],
-            //     ['침실',  139 ],
-            //     ['4인',  136 ]
-            // ]);
-            // var options = {
-            //     title : '누적 판매량 상위 5, 태그의 개별 판매량 ',
-            //     vAxis: {title: '판매량'},
-            //     hAxis: {title: '태그'},
-            //     seriesType: 'bars',
-            //     series: {5: {type: 'line'}}
-            // };
-
-            // var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
-            // chart.draw(data, options);
         }
     </script>
 </head>

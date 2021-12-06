@@ -36,17 +36,17 @@ public class ItemFormDto {
     private List<Long> itemImgIds = new ArrayList<>();
 
         private static ModelMapper modelMapper = new ModelMapper();
-//    private static ItemFormMapStruct itemFormMapStruct= new ItemFormMapStructImpl();
+//    private static ItemFormMapStruct itemFormMapStruct= new ItemFormMapStructImpl(); //mapstruct 과제 해당
 
 
     public Item createItem() {
         return modelMapper.map(this, Item.class);
-//        return itemFormMapStruct.toEntity(this);
+//        return itemFormMapStruct.toEntity(this); //mapstruct 과제 해당
     }
 
     public static ItemFormDto of(Item item) {
         return modelMapper.map(item, ItemFormDto.class);
-//        return itemFormMapStruct.toDto(item);
+//        return itemFormMapStruct.toDto(item); //mapstruct 과제 해당
     }
 
     private List<String> tags = new ArrayList<>();

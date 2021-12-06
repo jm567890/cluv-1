@@ -70,7 +70,8 @@
             function applyFilter() {
                 location.href = "/detailSearch?filter=" + encodeURIComponent(filterdArray.join(','));
             }
-            function uploadArray(){
+
+            function uploadArray(){ //사용 안함
                 var token = $("meta[name='_csrf']").attr("content");
                 var header = $("meta[name='_csrf_header']").attr("content");
                 var url = "/detailSearch";

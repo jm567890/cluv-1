@@ -26,7 +26,6 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final OrderRepository orderReporsitory;
     private final ItemImgRepository itemImgRepository;
-    private final TagRepository tagRepository;
     private final ItemTagRepository itemTagRepository;
 
     public Long order(OrderDto orderDto, String email){
@@ -65,7 +64,7 @@ public class OrderService {
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderItem : orderItems) {
                 ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
-                        (orderItem.getItem().getId(), "Y"); //주문한 상품의 대효 이미지 조회
+                        (orderItem.getItem().getId(), "Y"); //주문한 상품의 대표 이미지 조회
                 OrderItemDto orderItemDto =
                         new OrderItemDto(orderItem, itemImg.getImgUrl());
                 orderHistDto.addOrderItemDto(orderItemDto);

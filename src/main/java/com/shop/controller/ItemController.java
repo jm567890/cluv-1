@@ -3,6 +3,7 @@ package com.shop.controller;
 import com.shop.dto.ItemFormDto;
 import com.shop.dto.ItemSearchDto;
 import com.shop.entity.Item;
+import com.shop.entity.Tag;
 import com.shop.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,6 @@ public class ItemController {
     public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
                           Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList,
                           @RequestParam("tags[]") List<String> tags){
-//        System.out.println("=============================>"+tags);
         if(bindingResult.hasErrors()){
             return "item/itemForm";
         }
@@ -59,11 +60,20 @@ public class ItemController {
         return "redirect:/";
     }
 
+    //상품 수정 불러오기
     @GetMapping(value = "/admin/item/{itemId}")
     public String ItemDtl(@PathVariable("itemId") Long itemId, Model model){
 
         try {
             ItemFormDto itemFormDto = itemService.getItemDtl(itemId);   //조회한 상품 데이터를 모델에 담아서 뷰로 전달
+            List<Tag> tag = itemService.getTags(itemId);    //태그 조회
+            List<String> tagList = new ArrayList<>();
+
+            for(Tag t : tag) {
+                tagList.add(t.getId().toString());
+            }
+
+            model.addAttribute("tags",tagList);
             model.addAttribute("itemFormDto", itemFormDto);
         }catch (EntityNotFoundException e){     //상품 엔티티가 존재하지 않을 경우 에러메시지를 담아 상품 등로 페이지로 이동
             model.addAttribute("errorMessage","존재하지 않는 상품 입니다.");
@@ -73,6 +83,7 @@ public class ItemController {
         return "item/itemForm";
     }
 
+    //상품 수정 내용 전송
     @PostMapping(value = "/admin/item/{itemId}")
     public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
                            @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList, Model model,@RequestParam("tags[]") List<String> tags){
@@ -87,7 +98,7 @@ public class ItemController {
         }
 
         try {
-            itemService.saveItem(itemFormDto, itemImgFileList,tags);
+            itemService.updateItem(itemFormDto, itemImgFileList,tags);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
             return "item/itemForm";
@@ -112,9 +123,10 @@ public class ItemController {
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         model.addAttribute("item", itemFormDto);
         return "item/itemDtl";
-//        return "item/itemDtlAjax";
+//        return "item/itemDtlAjax";  //과제
     }
 
+    //과제
 //    @GetMapping(value = "/item/{itemId}/api")
 //    public @ResponseBody
 //    ResponseEntity itemDtlAjax(@PathVariable("itemId") Long itemId) {
